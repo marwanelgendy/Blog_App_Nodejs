@@ -1,9 +1,19 @@
 const express = require('express')
+const mongoose = require('mongoose')
 const path = require('path')
 const ejs = require('ejs')
+const config = require('./config')
 
 // create express app
 const app = express()
+
+// connect to database
+const url = config.mongoUrl
+const connect = mongoose.connect(url)
+
+connect.then(dp =>{
+    console.log("Connect correctly to server")
+}, err => {console.log(err)})
 
 // set template engine
 app.set('view engine' , 'ejs')
@@ -31,4 +41,3 @@ app.get('/contact', (req , res)=>{
 app.get('/post', (req , res)=>{
     res.render('post')
 })
-
