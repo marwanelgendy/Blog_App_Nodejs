@@ -1,8 +1,10 @@
 const express = require('express')
 const mongoose = require('mongoose')
+const bodyParser = require('body-parser')
 const path = require('path')
 const ejs = require('ejs')
 const config = require('./config')
+const BlogPost = require('./models/BlogPost')
 
 // create express app
 const app = express()
@@ -17,17 +19,23 @@ connect.then(dp =>{
 
 // set template engine
 app.set('view engine' , 'ejs')
+
 // serve static files from public folder
 app.use(express.static('public'))
+
+// parser incoming request
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({extended : false}))
 
 // Listen to port 4000
 app.listen(4000 , ()=>{
     console.log("App Listening to port 4000")
 })
 
-// create routes
-app.get('/', (req , res)=>{
-    res.render('index')
+// routes
+app.get('/', async (req , res)=>{
+    const blogposts = await BlogPost.find({})
+    res.render('index' , {blogposts})
 })
 
 app.get('/about', (req , res)=>{
@@ -38,6 +46,17 @@ app.get('/contact', (req , res)=>{
     res.render('contact')
 })
 
-app.get('/post', (req , res)=>{
-    res.render('post')
+app.get('/post/:postId', async (req , res)=>{
+
+    const post = await BlogPost.findById(req.params.postId)
+    res.render('post',{post})
+})
+
+app.get('/post/new', (req , res)=>{
+    res.render('create')
+})
+
+app.post('/post/new', async (req , res)=>{
+    await BlogPost.create(req.body)
+    res.redirect('/')
 })
