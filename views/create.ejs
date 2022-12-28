@@ -31,22 +31,29 @@
                             <!-- To make this form functional, sign up at-->
                             <!-- https://startbootstrap.com/solution/contact-forms-->
                             <!-- to get an API token!-->
-                            <form action="/post/new" method="post" id="contactForm" data-sb-form-api-token="API_TOKEN">
-                                <div class="form-floating">
-                                    <input class="form-control" id="title" name="title" type="text" placeholder="Enter psot title..."/>
-                                    <label for="name">Title</label>
+                            <form action="/posts/store" method="POST" enctype="multipart/form-data">
+                                <div class="control-group">
+                                  <div class="form-group floating-label-form-group controls">
+                                    <label>Title</label>
+                                    <input type="text" class="form-control" placeholder="Title" id="title" name="title">
+                                  </div>
                                 </div>
-                                <div class="form-floating">
-                                    <textarea class="form-control" rows="5" id="body" name="body" placeholder="Enter your post here..." style="height: 12rem"></textarea>
-                                    <label for="message">Body</label>
+                                <div class="control-group">
+                                  <div class="form-group floating-label-form-group controls">
+                                    <label>Body</label>
+                                    <textarea rows="10" class="form-control" placeholder="Blogpost" id="body" name="body"></textarea>
+                                  </div>
                                 </div>
-                                <br />
-                                <!-- Submit Button-->
-                                <div class="form-group">
-                                    <button type="submit" class="btn btn-primary"
-                                    id="sendMessageButton">Send</button>
-                                    </div>
-                            </form>
+                                <div class="control-group">
+                                  <div class="form-group floating-label-form-group controls">
+                                    <label>Image</label>
+                                    <input type="file" class="form-control" id="image" name="image">
+                                  </div>
+                                </div>
+                                <br>
+                                <div id="success"></div>
+                                <button type="submit" class="btn btn-primary" id="sendMessageButton">Send</button>
+                              </form>
                         </div>
                     </div>
                 </div>

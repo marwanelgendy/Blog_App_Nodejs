@@ -3,6 +3,7 @@ const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
 const path = require('path')
 const ejs = require('ejs')
+const fileUpload = require('express-fileupload')
 const config = require('./config')
 const BlogPost = require('./models/BlogPost')
 
@@ -26,6 +27,7 @@ app.use(express.static('public'))
 // parser incoming request
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended : false}))
+app.use(fileUpload())
 
 // Listen to port 4000
 app.listen(4000 , ()=>{
@@ -52,11 +54,16 @@ app.get('/post/:postId', async (req , res)=>{
     res.render('post',{post})
 })
 
-app.get('/post/new', (req , res)=>{
+app.get('/posts/new', (req , res)=>{
     res.render('create')
 })
 
-app.post('/post/new', async (req , res)=>{
-    await BlogPost.create(req.body)
-    res.redirect('/')
+app.post('/posts/store', async (req , res)=>{
+
+    let image = req.files.image
+    image.mv(path.resolve(__dirname , 'public/img' , image.name) , async(error)=>{
+        await BlogPost.create({ ...req.body , image: '/img/'+image.name })
+        res.redirect('/')
+    })
+    
 })
