@@ -6,6 +6,7 @@ const ejs = require('ejs')
 const fileUpload = require('express-fileupload')
 const config = require('./config')
 const BlogPost = require('./models/BlogPost')
+const validateForm = require('./middleware/validateForm')
 
 // create express app
 const app = express()
@@ -58,12 +59,11 @@ app.get('/posts/new', (req , res)=>{
     res.render('create')
 })
 
-app.post('/posts/store', async (req , res)=>{
+app.post('/posts/store', validateForm , async (req , res)=>{
 
     let image = req.files.image
     image.mv(path.resolve(__dirname , 'public/img' , image.name) , async(error)=>{
         await BlogPost.create({ ...req.body , image: '/img/'+image.name })
         res.redirect('/')
     })
-    
 })
