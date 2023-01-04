@@ -11,6 +11,10 @@ const newPostController = require('./controller/newPost')
 const homeController = require('./controller/home')
 const getPostController = require('./controller/getPost')
 const storePostController = require('./controller/storePost')
+const newUserController = require('./controller/newUser')
+const storeUserController = require('./controller/storeUser')
+const loginController = require('./controller/login')
+const loginUserController = require('./controller/loginUser')
 
 // create express app
 const app = express()
@@ -40,6 +44,14 @@ app.listen(4000 , ()=>{
 })
 
 // routes
+app.get('/auth/login', loginController)
+
+app.get('/iuser/login', loginUserController)
+
+app.get('/auth/register' , newUserController)
+
+app.post('/user/register' , storeUserController)
+
 app.get('/', homeController)
 
 app.get('/post/:postId', getPostController)
