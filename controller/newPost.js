@@ -1,3 +1,3 @@
-module.exports = (res , res)=>{
+module.exports = (req , res)=>{
     res.render('create')
 }

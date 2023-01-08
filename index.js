@@ -1,10 +1,15 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
+const expressSession = require('express-session')
 const ejs = require('ejs')
 const fileUpload = require('express-fileupload')
 const config = require('./config')
+
+// MiddleWare Function
 const validateForm = require('./middleware/validateForm')
+const authMiddleware = require('./middleware/auth')
+const redirectIfAuthenticatedMiddleware = require('./middleware/redirectIfAuthenticated')
 
 // Controllers Function
 const newPostController = require('./controller/newPost')
@@ -15,6 +20,10 @@ const newUserController = require('./controller/newUser')
 const storeUserController = require('./controller/storeUser')
 const loginController = require('./controller/login')
 const loginUserController = require('./controller/loginUser')
+const logoutUserController = require('./controller/logoutUser')
+
+// Global Variables
+    global.loggedIn = null;
 
 // create express app
 const app = express()
@@ -37,6 +46,13 @@ app.use(express.static('public'))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended : false}))
 app.use(fileUpload())
+app.use(expressSession({
+    secret : '12345'
+}))
+app.use('*' , (req , res , next) =>{
+    loggedIn = req.session.userId
+    next()
+})
 
 // Listen to port 4000
 app.listen(4000 , ()=>{
@@ -44,18 +60,22 @@ app.listen(4000 , ()=>{
 })
 
 // routes
-app.get('/auth/login', loginController)
+app.get('/auth/login', redirectIfAuthenticatedMiddleware ,loginController)
 
-app.get('/iuser/login', loginUserController)
+app.post('/user/login', redirectIfAuthenticatedMiddleware ,loginUserController)
 
-app.get('/auth/register' , newUserController)
+app.get('/auth/register' ,redirectIfAuthenticatedMiddleware , newUserController)
 
-app.post('/user/register' , storeUserController)
+app.post('/user/register' , redirectIfAuthenticatedMiddleware , storeUserController)
+
+app.get('/user/logout' , logoutUserController)
 
 app.get('/', homeController)
 
 app.get('/post/:postId', getPostController)
 
-app.get('/posts/new', newPostController)
+app.get('/posts/new', authMiddleware ,newPostController)
 
 app.post('/posts/store', validateForm , storePostController)
+
+app.use((req, res) => res.render('notfound'));
