@@ -5,6 +5,7 @@ const expressSession = require('express-session')
 const ejs = require('ejs')
 const fileUpload = require('express-fileupload')
 const config = require('./config')
+const flash = require('connect-flash');
 
 // MiddleWare Function
 const validateForm = require('./middleware/validateForm')
@@ -53,6 +54,7 @@ app.use('*' , (req , res , next) =>{
     loggedIn = req.session.userId
     next()
 })
+app.use(flash())
 
 // Listen to port 4000
 app.listen(4000 , ()=>{
