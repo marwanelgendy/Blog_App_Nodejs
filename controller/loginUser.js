@@ -4,8 +4,9 @@ const bcrypt = require('bcrypt')
 module.exports = (req , res , next) =>{
     const {username , password} = req.body
 
-    User.findOne({username : username} , (error , user) =>{
-
+    User.findOne({username : username} , (err , user)=>{
+        // console.log(user)
+       
         if(user){
             bcrypt.compare(password , user.password , (error , same)=>{
                 if(same){
@@ -13,10 +14,15 @@ module.exports = (req , res , next) =>{
                     res.redirect('/')
                 }
                 else{
+                    const ValidatoinErrors = "Password is incorrect"
+                    req.flash('validationErrors' , ValidatoinErrors)
                     res.redirect('/auth/login')
                 }
             })
         }else{
+            const ValidatoinErrors = "The Username Or Password is incorrect"
+            req.flash('validationErrors' , ValidatoinErrors)
+            
             res.redirect('/auth/login')
         }
     })

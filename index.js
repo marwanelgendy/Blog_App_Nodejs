@@ -24,7 +24,7 @@ const loginUserController = require('./controller/loginUser')
 const logoutUserController = require('./controller/logoutUser')
 
 // Global Variables
-    global.loggedIn = null;
+global.loggedIn = null;
 
 // create express app
 const app = express()
