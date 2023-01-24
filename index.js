@@ -56,8 +56,12 @@ app.use('*' , (req , res , next) =>{
 })
 app.use(flash())
 
-// Listen to port 4000
-app.listen(4000 , ()=>{
+// Listen to port
+let port = process.env.PORT
+
+if(port == null || port == "") port = 4000
+
+app.listen(port , ()=>{
     console.log("App Listening to port 4000")
 })
 
